@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodapp.Databasehelper.Database;
 import com.example.foodapp.Entity.Food;
+import com.example.foodapp.FoodItemActivity;
+import com.example.foodapp.MapsActivity;
 import com.example.foodapp.R;
 import com.example.foodapp.Util.Util;
 
@@ -58,7 +60,9 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodAdapterVie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                Intent intent = new Intent(context, FoodItemActivity.class);
+                Intent intent = new Intent(context, MapsActivity.class);
+                context.startActivity(intent);
             }
         });
     }
