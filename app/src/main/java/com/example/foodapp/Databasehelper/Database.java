@@ -99,6 +99,16 @@ public class Database extends SQLiteOpenHelper {
         return 0;
     }
 
+    public boolean delete(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+//        String delete = "DELETE FROM " + Util.FOOD_TABLE_NAME + " WHERE " + Util.FOOD_ID + " = '" + id + "'";
+//        db.execSQL(delete);
+
+        boolean result = db.delete(Util.FOOD_TABLE_NAME, Util.FOOD_NAME + "=?", new String[]{name}) > 0;
+        db.close();
+        return result;
+    }
+
     public List<Food> fetchFood(int userID){
         List<Food> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

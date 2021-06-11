@@ -3,24 +3,22 @@ package com.example.foodapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.foodapp.Adapter.CartAdapter;
+import com.example.foodapp.Adapter.FoodAdapter;
+import com.example.foodapp.Entity.Cart;
+import com.example.foodapp.Util.Util;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.wallet.*;
@@ -28,27 +26,43 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import java.util.ArrayList;
+import java.util.List;
 
-    private GoogleMap mMap;
-    ImageView imageView;
-    View btn_googlePay;
+public class CartActivity extends AppCompatActivity {
 
+    RecyclerView recyclerView;
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 168;
     private PaymentsClient paymentsClient;
     private JSONObject paymentRequestJSON;
-
+    View btn_googlePay;
+    List<Cart> cartList;
+    TextView total;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_maps);
-        setContentView(R.layout.activity_food_item);
-        imageView = findViewById(R.id.iv_food_img);
-        imageView.setImageResource(R.mipmap.ic_launcher);
+        setContentView(R.layout.activity_cart);
+
+        total = findViewById(R.id.tv_total_id);
+        int totalint =0;
+        recyclerView = findViewById(R.id.rec);
+        cartList = new ArrayList<>();
+        cartList.add(new Cart("apple", 2, 100));
+        cartList.add(new Cart("book", 2, 100));
+        try {
+            CartAdapter adapter = new CartAdapter(this, cartList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
+            recyclerView.setAdapter(adapter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for(Cart c : cartList){
+            totalint += c.getPrice();
+        }
+        total.setText("$"+totalint);
+
         btn_googlePay = findViewById(R.id.btn_googlepay_id);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map2);
-        mapFragment.getMapAsync(this);
 
         Wallet.WalletOptions  walletOptions = new Wallet.WalletOptions.Builder()
                 .setEnvironment(WalletConstants.ENVIRONMENT_TEST)
@@ -64,8 +78,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
-
 
     private void loadPayment() {
         final PaymentDataRequest paymentDataRequest = PaymentDataRequest.fromJson(paymentRequestJSON.toString());
@@ -99,13 +111,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         paymentRequestJSON = baseConfigJSON();
         try {
             paymentRequestJSON.put("transactionInfo", new JSONObject()
-                                .put("totalPrice", "10")
-                                .put("totalPriceStatus", "FINAL")
-                                .put("currencyCode", "USD"));
+                    .put("totalPrice", "10")
+                    .put("totalPriceStatus", "FINAL")
+                    .put("currencyCode", "USD"));
 
             paymentRequestJSON.put("merchantInfo", new JSONObject()
-                                .put("merchantId", "19216811")
-                                .put("merchantName", "MrMakaraResturant"));
+                    .put("merchantId", "19216811")
+                    .put("merchantName", "MrMakaraResturant"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -157,33 +169,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static JSONObject getTokenSpec() throws JSONException {
 
 
-            return new JSONObject() {{
-                put("type", "PAYMENT_GATEWAY");
-                put("parameters", new JSONObject() {{
-                    put("gateway", "example");
-                    put("gatewayMerchantId", "19216811");
-                }});
-            }};
+        return new JSONObject() {{
+            put("type", "PAYMENT_GATEWAY");
+            put("parameters", new JSONObject() {{
+                put("gateway", "example");
+                put("gatewayMerchantId", "19216811");
+            }});
+        }};
 
-    }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng melb = new LatLng(-37.848, 145.114);
-        mMap.addMarker(new MarkerOptions().position(melb).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(melb));
     }
 
     @Override
@@ -198,26 +191,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     case Activity.RESULT_OK:
                         PaymentData paymentData = PaymentData.getFromIntent(data);
                         if(handlePaymentSuccess(paymentData)){
-                            startActivity(new Intent(MapsActivity.this, HomeActivity.class));
+                            cartList.clear();
+                            recyclerView.removeAllViews();
+                            total.setText("$"+0);
                         }
-                        Log.e("resultpay: ", "success");
                         break;
 
                     case Activity.RESULT_CANCELED:
-                        // The user cancelled the payment attempt
-                        Log.e("resultpay: ", "cancel");
                         break;
 
                     case AutoResolveHelper.RESULT_ERROR:
                         Status status = AutoResolveHelper.getStatusFromIntent(data);
-                        Log.e("resultpay: ", "status: " + status.toString());
-                        Log.e("resultpay: ", "error");
-                        Log.e("resultpay", String.format("Error code: %d", status.getStatusCode()));
                         break;
                 }
-
-                // Re-enables the Google Pay payment button.
-//                googlePayButton.setClickable(true);
         }
     }
 
@@ -226,14 +212,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Token will be null if PaymentDataRequest was not constructed using fromJson(String).
         final String paymentInfo = paymentData.toJson();
         if (paymentInfo == null) {
-            Log.e("resultpay: ", "paymentinfo: " + paymentInfo);
             return false;
         }
 
         try {
             JSONObject paymentMethodData = new JSONObject(paymentInfo).getJSONObject("paymentMethodData");
-            // If the gateway is set to "example", no payment information is returned - instead, the
-            // token will only consist of "examplePaymentMethodToken".
 
             final JSONObject tokenizationData = paymentMethodData.getJSONObject("tokenizationData");
             final String token = tokenizationData.getString("token");

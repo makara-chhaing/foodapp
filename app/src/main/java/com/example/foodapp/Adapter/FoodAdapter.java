@@ -47,6 +47,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodAdapterVie
         holder.header.setText(food.getName());
         holder.body.setText(food.getDescription());
 
+
+
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +62,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodAdapterVie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(context, FoodItemActivity.class);
+                notifyItemRemoved(position);
+                foodList.remove(food);
                 Intent intent = new Intent(context, MapsActivity.class);
                 context.startActivity(intent);
             }

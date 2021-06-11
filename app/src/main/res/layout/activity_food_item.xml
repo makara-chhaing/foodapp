@@ -131,7 +131,9 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_add_image_id"
         app:layout_constraintVertical_bias="0.977" />
 
-    <include layout="@layout/googlepay_button" />
+    <include
+        layout="@layout/googlepay_button"
+        android:id="@+id/btn_googlepay_id" />
 
 
 </LinearLayout>

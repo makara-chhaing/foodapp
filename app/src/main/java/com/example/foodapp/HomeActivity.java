@@ -89,9 +89,16 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.signout:
                 signOut();
                 return true;
+            case R.id.cart:
+                openCart();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openCart() {
+        startActivity(new Intent(this, CartActivity.class));
     }
 
     private void signOut() {
