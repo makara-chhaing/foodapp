@@ -15,7 +15,7 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pick up time:  "
+            android:text="Pick up time:  5:00PM"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
             app:layout_constraintVertical_bias="0.767" />
 
         <TextView
-            android:id="@+id/tv_quan"
+            android:id="@+id/tv_quan_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quantity:  "
@@ -40,7 +40,7 @@
             app:layout_constraintVertical_bias="0.878" />
 
         <TextView
-            android:id="@+id/tv_des"
+            android:id="@+id/tv_des_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description: "
@@ -56,7 +56,7 @@
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date:  "
+            android:text="Date:  12/06/2021"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -67,7 +67,7 @@
             app:layout_constraintVertical_bias="0.655" />
 
         <TextView
-            android:id="@+id/tv_tile"
+            android:id="@+id/tv_titile_food"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title: "
@@ -119,7 +119,7 @@
         tools:context=".MapsActivity" />
 
     <Button
-        android:id="@+id/btb_add_to_cart"
+        android:id="@+id/btn_add_to_cart"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="10dp"

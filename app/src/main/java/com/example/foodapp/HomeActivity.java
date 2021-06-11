@@ -17,6 +17,9 @@ import com.example.foodapp.Adapter.FoodAdapter;
 import com.example.foodapp.Databasehelper.Database;
 import com.example.foodapp.Util.Util;
 
+import static com.example.foodapp.Util.Util.price_container;
+import static com.example.foodapp.Util.Util.quantity_container;
+
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     int userID, out;
@@ -25,6 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        price_container = 15;
+        quantity_container = 1;
         if(Util.fooduser_db == null){
             Log.d(Util.DEBUG, "Create Database");
             Util.fooduser_db = new Database(this,null);

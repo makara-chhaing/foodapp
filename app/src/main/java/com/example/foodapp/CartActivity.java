@@ -2,8 +2,12 @@ package com.example.foodapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.example.foodapp.Util.Util.cartList;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -36,7 +39,7 @@ public class CartActivity extends AppCompatActivity {
     private PaymentsClient paymentsClient;
     private JSONObject paymentRequestJSON;
     View btn_googlePay;
-    List<Cart> cartList;
+
     TextView total;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +49,10 @@ public class CartActivity extends AppCompatActivity {
         total = findViewById(R.id.tv_total_id);
         int totalint =0;
         recyclerView = findViewById(R.id.rec);
-        cartList = new ArrayList<>();
-        cartList.add(new Cart("apple", 2, 100));
-        cartList.add(new Cart("book", 2, 100));
+        if(cartList.size()==0){
+            cartList.add(new Cart("Pasta", 2, 30));
+            cartList.add(new Cart("Udon", 1, 17));
+        }
         try {
             CartAdapter adapter = new CartAdapter(this, cartList);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
@@ -90,9 +94,6 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void intitPayment() {
-        Log.e("resultpay: ", "get into init");
-
-
         IsReadyToPayRequest isReadyToPayRequest = IsReadyToPayRequest.fromJson(baseConfigJSON().toString());
 
         Task<Boolean> task = paymentsClient.isReadyToPay(isReadyToPayRequest);
@@ -233,5 +234,32 @@ public class CartActivity extends AppCompatActivity {
             throw new RuntimeException("The selected garment cannot be parsed from the list of elements");
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.foodmenu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.home:
+                openHome();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    private void openHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

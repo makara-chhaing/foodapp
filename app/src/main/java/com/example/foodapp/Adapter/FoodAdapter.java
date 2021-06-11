@@ -20,6 +20,8 @@ import com.example.foodapp.Util.Util;
 
 import java.util.List;
 
+import static com.example.foodapp.Util.Util.*;
+
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodAdapterViewHolder> {
 
     Context context;
@@ -62,7 +64,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodAdapterVie
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                img_container = food.getImgBitmap();
+                name_container = food.getName();
+                description_container = food.getDescription();
                 notifyItemRemoved(position);
+                database.delete(food.getName());
                 foodList.remove(food);
                 Intent intent = new Intent(context, MapsActivity.class);
                 context.startActivity(intent);

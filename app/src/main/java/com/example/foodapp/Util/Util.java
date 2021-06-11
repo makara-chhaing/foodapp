@@ -1,8 +1,13 @@
 package com.example.foodapp.Util;
 
+import android.graphics.Bitmap;
 import com.example.foodapp.Databasehelper.Database;
+import com.example.foodapp.Entity.Cart;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -34,4 +39,11 @@ public class Util {
 
     public static final String LOGIN_STATE = "login_state";
 
+    public static List<Cart> cartList = new ArrayList<>();
+
+    public static Bitmap img_container;
+    public static String name_container;
+    public static int price_container;
+    public static int quantity_container;
+    public static String description_container;
 }

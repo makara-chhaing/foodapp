@@ -3,17 +3,18 @@ package com.example.foodapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.example.foodapp.Entity.Cart;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,11 +29,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.example.foodapp.Util.Util.*;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     ImageView imageView;
     View btn_googlePay;
+    Button btn_addtocart;
+    TextView title, description, quan;
 
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 168;
     private PaymentsClient paymentsClient;
@@ -44,8 +49,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        setContentView(R.layout.activity_maps);
         setContentView(R.layout.activity_food_item);
         imageView = findViewById(R.id.iv_food_img);
-        imageView.setImageResource(R.mipmap.ic_launcher);
+        title = findViewById(R.id.tv_titile_food);
+        description = findViewById(R.id.tv_des_food);
+        quan = findViewById(R.id.tv_quan_food);
+
+        imageView.setImageBitmap(img_container);
+        title.setText(name_container);
+        description.setText("Description: " + description_container);
+        quan.setText("Quantity: " + quantity_container);
+
         btn_googlePay = findViewById(R.id.btn_googlepay_id);
+        btn_addtocart = findViewById(R.id.btn_add_to_cart);
+        btn_addtocart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartList.add(new Cart(name_container, quantity_container++, price_container*quantity_container));
+                price_container+=3;
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                finish();
+            }
+        });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
@@ -167,15 +190,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
